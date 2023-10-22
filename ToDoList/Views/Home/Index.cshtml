@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="utf-8">
-  <title>My To-Do List!</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="~/css/styles.css" />
-</head>
-
-<body>
-
 @{
   Layout = "_Layout";
 }
@@ -33,24 +20,28 @@
   }
 </ul>
 
-<h4>Items</h4>
-@if (Model["items"].Length == 0)
+@if (User.Identity.IsAuthenticated)
 {
-  <p>No items have been added yet!</p>
-} 
-<ul>
-  @foreach (Item item in Model["items"])
+  <h4>Items for @User.Identity.Name</h4>
+  @if (Model["items"].Length == 0)
   {
-    <li>@Html.ActionLink(@item.Description, "Details", "Items", new { id = @item.ItemId})</li>
-  }
-</ul>
-
+    <p>No items have been added yet!</p>
+  } 
+  <ul>
+  @foreach (Item item in Model["items"])
+    {
+      <li>@Html.ActionLink(@item.Description, "Details", "Items", new { id = @item.ItemId})</li>
+    }
+  </ul>
+}
+else
+{
+  <h4>Items</h4>
+  <p>Please @Html.ActionLink("log in", "LogIn", "Account") to view or manage your items.</p>
+}
 <hr />
 
-<p>@Html.ActionLink("Create or manage an account", "Index", "Account")</p>
 <p>@Html.ActionLink("Manage items", "Index", "Items")</p> 
 <p>@Html.ActionLink("Manage categories", "Index", "Categories")</p>
 <p>@Html.ActionLink("Manage tags", "Index", "Tags")</p>
-</body>
-
-</html>
+<p>@Html.ActionLink("Create or manage an account", "Index", "Account")</p>

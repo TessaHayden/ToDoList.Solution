@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using System.Linq;
 using ToDoList.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ToDoList.Controllers
 {
@@ -37,16 +38,22 @@ namespace ToDoList.Controllers
       return View();
     }
     [HttpPost]
-    public ActionResult Create(Item item)
+    public async Task<ActionResult> Create(Item item, int CategoryId)
     {
       if (!ModelState.IsValid)
       {
         ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
         return View(item);
       }
-      _db.Items.Add(item);
-      _db.SaveChanges();
-      return RedirectToAction("Index");
+      else
+      {
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
+        item.User = currentUser;
+        _db.Items.Add(item);
+        _db.SaveChanges();
+        return RedirectToAction("Index");
+      }
     }
     public ActionResult Details(int id)
     {
