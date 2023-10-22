@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 using ToDoList.Models;
 
 namespace ToDoList
@@ -18,10 +19,16 @@ namespace ToDoList
           )
         )
       );
+      builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<ToDoListContext>()
+               .AddDefaultTokenProviders();
       WebApplication app = builder.Build();
+      //app.UseDeveloperExceptionPage();
       app.UseHttpsRedirection();
       app.UseStaticFiles();
       app.UseRouting();
+      app.UseAuthentication();
+      app.UseAuthorization();
       app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}"
