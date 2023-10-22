@@ -59,7 +59,7 @@ namespace ToDoList.Tests
     public void AddItem_AssoctiatesItemWithCategory_ItemList()
     {
       string description = "Walk the dog.";
-      Item newItem = new Item(description);
+      Item newItem = new Item(description, 0);
       List<Item> newList = new List<Item> { newItem };
       string name = "Work";
       Category newCategory = new Category(name);
